@@ -1,0 +1,35 @@
+name: Mosaicsoft Python Module Build
+run-name: ${{ github.actor }} is building ${{ github.repository }} 🚀
+on:
+  workflow_call:
+    inputs:
+      module-name:
+        type: string
+        required: true
+jobs:
+  Build:
+    runs-on: atlas
+    container: python:3.12-alpine
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - name: Build
+        run: |
+          ls
+          apk add git
+          pip install pipenv
+          pipenv install -d
+          pipenv run flake8
+          pipenv run mypy
+          pipenv run black .
+          pipenv run isort .
+          pipenv run pytest --cov
+          if [ "$GITHUB_REF_TYPE" == "tag" ]; then
+            echo "$GITHUB_REF_NAME"
+            sed -i "1s/.*/__version__ = \"$GITHUB_REF_NAME\"/" "./${{inputs.module-name}}/__init__.py"
+          fi
+          pipenv run flit build
+      - run: echo "🍏 This job's status is ${{ job.status }}."
