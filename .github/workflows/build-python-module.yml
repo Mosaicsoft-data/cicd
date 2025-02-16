@@ -32,4 +32,7 @@ jobs:
             sed -i "1s/.*/__version__ = \"$GITHUB_REF_NAME\"/" "./${{inputs.module-name}}/__init__.py"
           fi
           pipenv run flit build
+      - uses: actions/upload-artifact@v4
+        with:
+          path: dist/*.whl
       - run: echo "🍏 This job's status is ${{ job.status }}."
