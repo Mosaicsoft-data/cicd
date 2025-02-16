@@ -32,10 +32,10 @@ jobs:
             sed -i "1s/.*/__version__ = \"$GITHUB_REF_NAME\"/" "./${{inputs.module-name}}/__init__.py"
           fi
           pipenv run flit build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: my-artifact
-          path: dist/*.whl
+      # - uses: actions/upload-artifact@v4
+      #   with:
+      #     name: my-artifact
+      #     path: dist/*.whl
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
   pypi-publish:
@@ -49,7 +49,7 @@ jobs:
       id-token: write
     steps:
       # retrieve your distributions here
-      - uses: actions/download-artifact@v4
+      # - uses: actions/download-artifact@v4
       - run: ls dist
       # - name: Publish package distributions to PyPI
       #   uses: pypa/gh-action-pypi-publish@release/v1
