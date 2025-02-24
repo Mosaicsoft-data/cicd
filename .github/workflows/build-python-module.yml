@@ -24,6 +24,9 @@ jobs:
           pipenv install -d
 
           set +e
+          git config --global --add safe.directory /github/workspace
+          git fetch --tags
+          git fetch --prune --unshallow || true
           LATEST_TAG=$(git describe --tags --abbrev=0)
           set -e 
           
