@@ -22,22 +22,10 @@ jobs:
           apk add git
           pip install pipenv
           pipenv install -d
-
-          set +e
-          git config --global --add safe.directory /github/workspace
-          git fetch --tags
-          git fetch --prune --unshallow || true
-          LATEST_TAG=$(git describe --tags --abbrev=0)
-          set -e 
-          
-          echo "LATEST_TAG: $LATEST_TAG"
           
           if [ "$GITHUB_REF_TYPE" == "tag" ]; then
               echo "$GITHUB_REF_NAME"
               sed -i "1s/.*/__version__ = \"$GITHUB_REF_NAME\"/" "./${{inputs.module-name}}/__init__.py"
-          elif [ -n "$LATEST_TAG" ]; then
-              echo "$LATEST_TAG"
-              sed -i "1s/.*/__version__ = \"$LATEST_TAG\"/" "./${{inputs.module-name}}/__init__.py"
           fi
           
           pipenv run flake8
